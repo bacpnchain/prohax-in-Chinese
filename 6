@@ -1,0 +1,217 @@
+--Kenny泛滥外部汉化脚本我的哔站UID:1531514159（删了这个死妈死爹死全家）
+local Translations = {
+    --["Using New Prohax"] = "正在使用prohax",
+    ["Main"] = "主要",
+    ["Player"] = "玩家",
+    ["Exploits"] = "漏洞利用",
+    ["Visuals"] = "视觉",
+    ["Floor"] = "楼层",
+    ["Config"] = "配置",
+    ["Miscellaneous"] = "杂项",
+    ["Notifying / ESP"] = "通知/透视",
+    ["Instant Interacts"] = "瞬间互动",
+    ["Prompt Clip"] = "提示穿透",
+    ["Disable AFK"] = "防挂机",
+    ["Anti Lag"] = "防卡顿",
+    ["No Cutscenes"] = "无过场动画",
+    ["Reset"] = "重置",
+    ["Play Again"] = "再次游玩",
+    ["Search"] = "搜索",
+    ["Reach"] = "范围",
+    ["Prompt Reach"] = "提示范围",
+    ["Door Reach"] = "开门范围",
+    ["Door Reach Range: 20"] = "开门范围:20",
+    ["Toggle"] = "切换",
+    ["Lobby"] = "返回大厅",
+    ["Revive"] = "复活",
+    ["Entities"] = "实体",
+    ["Entity Notifys"] = "实体通知",
+    ["Entities ESP"] = "实体透视",
+    ["Movement"] = "移动",
+    ["Camera"] = "镜头",
+    ["Speed Boost Slider"] = "速度提升调整",
+    ["Speed Boost"] = "启用速度提升",
+    ["Noclip"] = "穿墙",
+    ["Enable Jump"] = "启用跳跃",
+    ["Infinite Jump"] = "无限跳跃",    
+    ["Infinite Items"] = "无限物品",
+    ["Infinite LockPicks"] = "无限开锁器",
+    ["Infinite Shears"] = "无限剪刀",
+    ["No Acceleration"] = "无加速度",
+    ["No Closet Exit Delay"] = "无出柜子延迟",
+    ["Fly Speed"] = "飞行速度",
+    ["Fly"] = "启用飞行",
+    ["Fullbright"] = "高亮",
+    ["No Camera Shake"] = "无镜头抖动",
+    ["Third Person"] = "第三人称",
+    ["Spectate Entity"] = "锁定实体（在柜子里时）",
+    ["FOV Slider"] = "视野调整",
+    ["FOV"] = "视野",
+    ["Entitys"] = "实体",
+    ["Bypass"] = "绕过",
+    ["Anti-Dread"] = "防恐惧",
+    ["Anti-Screech"] = "防尖叫",
+    ["Anti-A90"] = "防a90",
+    ["Anti-Eyes"] = "防eyes",
+    ["Anti-Snare"] = "防地刺",
+    ["Anti-Dupe"] = "防假门",
+    ["Anti-Figure-Hearing"] = "防Figure听力",
+    ["Automation"] = "自动",
+    ["Auto Interact"] = "自动互动",
+    ["Ignore List"] = "忽略列表",
+    ["Jeff Items"] = "杰夫商品",
+    ["Auto Heartbeat Minigame"] = "自动心跳游戏",
+    ["Unlock Padlock Distance"] = "自动解锁图书馆距离",
+    ["Automation Library Code"] = "自动图书馆密码",
+    ["Anti-Halt"] = "防halt",
+    ["Auto Breaker Box"] = "自动断路器谜题",
+    ["Auto Closet"] = "自动躲柜子",
+    ["Godmode Dropdown"] = "上帝模式形式",
+    ["God Mode"] = "上帝模式",
+    ["Anti Cheat Manipulati"] = "反作弊操纵",
+    ["Settings"] = "透视设置",
+    ["Enable Show Distances"] = "透视距离",
+    ["Transparent"] = "透明",
+    ["Transparency Closet"] = "柜子透明度",
+    ["Transparency Cart"] = "矿车透明度",
+    ["Door"] = "门",
+    ["Key"] = "钥匙",
+    ["Closet ESP"] = "柜子透视",
+    ["Gate Lever"] = "铁闸门拉杆透视",
+    ["Players ESP"] = "玩家透视",
+    ["Books"] = "书本",
+    ["Breaker"] = "断路器",
+    ["Items ESP"] = "物品透视",
+    ["Gold ESP"] = "金币透视",
+    ["Anti Nanner Banana"] = "防香蕉",
+    ["Anti Seek-Obstructions"] = "防seek障碍物",
+    ["Modifiers"] = "修改",
+    ["Death Farm"] = "刷死亡次数",
+    ["ESP"] = "额外透视",
+    ["Addons"] = "插件",
+    ["Anti Lookman"] = "防lookman",
+    ["Anti Fog"] = "去除雾",
+    ["Anti Giggle"] = "防giggle",
+    ["Anti Vacuum"] = "防真空",
+    ["Anti Gloom Egg"] = "防蝙蝠蛋",
+    ["Anti Jamming"] = "防修饰符音乐干扰",
+    ["Timer Lever ESP"] = "计时器拉杆透视",
+    ["Show Keybinds"] = "显示快捷菜单",    
+    ["Mshax v4.5"] =  "Mshax v4.5(bacon汉化版）",
+    ["No Footer"] = "此脚本由bacon汉化",
+}
+
+local function translateText(text)
+    if not text or type(text) ~= "string" then 
+        return text 
+    end
+
+    if Translations[text] then
+        return Translations[text]
+    end
+
+    for en, cn in pairs(Translations) do
+        if text:find(en) then
+            return text:gsub(en, cn)
+        end
+    end
+
+    return text
+end
+
+local function setupTranslationEngine()
+    local success, err = pcall(function()
+        local oldIndex = getrawmetatable(game).__newindex
+        setreadonly(getrawmetatable(game), false)
+
+        getrawmetatable(game).__newindex = newcclosure(function(t, k, v)
+            if (t:IsA("TextLabel") or t:IsA("TextButton") or t:IsA("TextBox")) and k == "Text" then
+                v = translateText(tostring(v))
+            end
+            return oldIndex(t, k, v)
+        end)
+
+        setreadonly(getrawmetatable(game), true)
+    end)
+
+    if not success then
+        warn("元表劫持失败:", err)
+
+        local translated = {}
+
+        local function scanAndTranslate()
+            for _, gui in ipairs(game:GetService("CoreGui"):GetDescendants()) do
+                if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                    pcall(function()
+                        local text = gui.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                gui.Text = translatedText
+                                translated[gui] = true
+                            end
+                        end
+                    end)
+                end
+            end
+
+            local player = game:GetService("Players").LocalPlayer
+            if player and player:FindFirstChild("PlayerGui") then
+                for _, gui in ipairs(player.PlayerGui:GetDescendants()) do
+                    if (gui:IsA("TextLabel") or gui:IsA("TextButton") or gui:IsA("TextBox")) and not translated[gui] then
+                        pcall(function()
+                            local text = gui.Text
+                            if text and text ~= "" then
+                                local translatedText = translateText(text)
+                                if translatedText ~= text then
+                                    gui.Text = translatedText
+                                    translated[gui] = true
+                                end
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+
+        local function setupDescendantListener(parent)
+            parent.DescendantAdded:Connect(function(descendant)
+                if descendant:IsA("TextLabel") or descendant:IsA("TextButton") or descendant:IsA("TextBox") then
+                    task.wait(0.1)
+                    pcall(function()
+                        local text = descendant.Text
+                        if text and text ~= "" then
+                            local translatedText = translateText(text)
+                            if translatedText ~= text then
+                                descendant.Text = translatedText
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+
+        pcall(setupDescendantListener, game:GetService("CoreGui"))
+        local player = game:GetService("Players").LocalPlayer
+        if player and player:FindFirstChild("PlayerGui") then
+            pcall(setupDescendantListener, player.PlayerGui)
+        end
+
+        while true do
+            scanAndTranslate()
+            task.wait(3)
+        end
+    end
+end
+
+task.wait(2)
+setupTranslationEngine()
+
+local success, err = pcall(function()
+    --这下面填加载外部脚本
+    loadstring(game:HttpGet("https://rawscripts.net/raw/DOORS-Prohax-v3-47773"))()     
+end)
+
+if not success then
+    warn("加载失败:", err)
+end
